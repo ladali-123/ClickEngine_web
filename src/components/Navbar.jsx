@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Menu, X, ChevronDown } from "lucide-react";
 import logo from "../assets/logo.png";
 
@@ -7,71 +8,140 @@ export default function Navbar() {
   const [productsOpen, setProductsOpen] = useState(false);
   const [marketingOpen, setMarketingOpen] = useState(false);
 
+  const navLinks = [
+    {
+      label: "Home",
+      path: "/",
+    },
+    {
+      label: "About Us",
+      path: "/#about",
+    },
+    {
+      label: "Products & Services",
+      submenu: [
+        {
+          label: "Admission Management System",
+          path: "/admission-management-system",
+        },
+        {
+          label: "Institute Management System",
+          path: "/institute-management-system",
+        },
+      ],
+    },
+    {
+      label: "Digital Marketing",
+      submenu: [
+        {
+          label: "SEO Services",
+          path: "/seo-service",
+        },
+        {
+          label: "Social Media Marketing",
+          path: "/social-media-marketing",
+        },
+        {
+          label: "Google Ads Management",
+          path: "/google-ads-management",
+        },
+      ],
+    },
+    {
+      label: "Contact",
+      path: "/contact",
+    },
+  ];
+
   return (
     <nav className="fixed top-0 left-0 w-full bg-white border-b border-slate-200 shadow-sm z-50">
       <div className="h-20 flex items-center justify-between px-8 lg:px-18">
-        
         {/* Logo */}
         <div className="flex-shrink-0">
-          <img
-            src={logo}
-            alt="ClickEngine"
-            className="h-12 lg:h-15 w-auto cursor-pointer"
-          />
+          <Link to="/">
+            <img
+              src={logo}
+              alt="ClickEngine"
+              className="h-12 lg:h-15 w-auto cursor-pointer"
+            />
+          </Link>
         </div>
 
         {/* Desktop Navigation */}
         <div className="hidden lg:flex items-center gap-8">
-          <NavItem title="Home" />
-          <NavItem title="About Us" />
+          {navLinks.map((item, index) => {
+            if (!item.submenu) {
+              return (
+                <NavItem
+                  key={index}
+                  title={item.label}
+                  path={item.path}
+                />
+              );
+            }
 
-          {/* Products & Services */}
-          <div
-            className="relative"
-            onMouseEnter={() => setProductsOpen(true)}
-            onMouseLeave={() => setProductsOpen(false)}
-          >
-            <button className="flex items-center gap-1 text-[15px] font-semibold text-slate-700
-             hover:text-blue-600 transition">
-              Products & Services
-              <ChevronDown size={16} />
-            </button>
+            const isProducts =
+              item.label === "Products & Services";
 
-            {productsOpen && (
-              <div className="absolute top-full left-0 mt-3 w-80 rounded-xl bg-white border
-               border-slate-100 shadow-[0_15px_40px_rgba(0,0,0,0.12)] overflow-hidden">
-                <DropdownItem text="Admission Management System" />
-                <DropdownItem text="Institute Management System" />
+            const isOpen = isProducts
+              ? productsOpen
+              : marketingOpen;
+
+            return (
+              <div
+                key={index}
+                className="relative after:absolute after:top-full after:left-0 after:w-full after:h-3 after:bg-transparent after:content-['']"
+                onMouseEnter={() =>
+                  isProducts
+                    ? setProductsOpen(true)
+                    : setMarketingOpen(true)
+                }
+                onMouseLeave={() =>
+                  isProducts
+                    ? setProductsOpen(false)
+                    : setMarketingOpen(false)
+                }
+              >
+                <button
+                  className="
+                  flex items-center gap-1
+                  text-[15px]
+                  font-semibold
+                  text-slate-700
+                  hover:text-blue-600
+                  transition
+                "
+                >
+                  {item.label}
+                  <ChevronDown size={16} />
+                </button>
+
+                {isOpen && (
+                  <div
+                    className={`
+                    absolute top-full left-0 mt-3 z-10
+                    rounded-xl bg-white border border-slate-100
+                    shadow-[0_15px_40px_rgba(0,0,0,0.12)]
+                    overflow-hidden
+                    ${isProducts ? "w-80" : "w-72"}
+                  `}
+                  >
+                    {item.submenu.map((subItem, idx) => (
+                      <DropdownItem
+                        key={idx}
+                        text={subItem.label}
+                        path={subItem.path}
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
-            )}
-          </div>
-
-          {/* Digital Marketing */}
-          <div
-            className="relative"
-            onMouseEnter={() => setMarketingOpen(true)}
-            onMouseLeave={() => setMarketingOpen(false)}
-          >
-            <button className="flex items-center gap-1 text-[15px] font-semibold text-slate-700
-             hover:text-blue-600 transition">
-              Digital Marketing
-              <ChevronDown size={16} />
-            </button>
-
-            {marketingOpen && (
-              <div className="absolute top-full left-0 mt-3 w-72 rounded-xl bg-white border
-               border-slate-100 shadow-[0_15px_40px_rgba(0,0,0,0.12)] overflow-hidden">
-                <DropdownItem text="SEO Services" />
-                <DropdownItem text="Social Media Marketing" />
-                <DropdownItem text="Google Ads Management" />
-              </div>
-            )}
-          </div>
-
-          <NavItem title="Contact" />
+            );
+          })}
 
           {/* CTA Button */}
-          <button
+          <Link
+            to="/getstarted"
             className="
               ml-2
               px-7
@@ -90,7 +160,7 @@ export default function Navbar() {
             "
           >
             Get Started
-          </button>
+          </Link>
         </div>
 
         {/* Mobile Menu Button */}
@@ -109,53 +179,67 @@ export default function Navbar() {
       {mobileOpen && (
         <div className="lg:hidden bg-white border-t border-slate-200 shadow-lg">
           <div className="flex flex-col px-5 py-4">
-            <MobileItem title="Home" />
-            <MobileItem title="About Us" />
+            {navLinks.map((item, index) => {
+              if (!item.submenu) {
+                return (
+                  <MobileItem
+                    key={index}
+                    title={item.label}
+                    path={item.path}
+                    closeMenu={() => setMobileOpen(false)}
+                  />
+                );
+              }
 
-            <details className="group">
-              <summary className="flex items-center justify-between py-4 cursor-pointer list-none font-medium text-slate-700">
-                Products & Services
-                <ChevronDown
-                  size={18}
-                  className="transition-transform group-open:rotate-180"
-                />
-              </summary>
+              return (
+                <details key={index} className="group">
+                  <summary
+                    className="
+                    flex items-center justify-between
+                    py-4 cursor-pointer list-none
+                    font-medium text-slate-700
+                  "
+                  >
+                    {item.label}
+                    <ChevronDown
+                      size={18}
+                      className="transition-transform group-open:rotate-180"
+                    />
+                  </summary>
 
-              <div className="pl-4 pb-3 flex flex-col gap-3 text-sm text-slate-600">
-                <button className="text-left">
-                  Admission Management System
-                </button>
-                <button className="text-left">
-                  Institute Management System
-                </button>
-              </div>
-            </details>
+                  <div className="pl-4 pb-3 flex flex-col gap-3 text-sm text-slate-600">
+                    {item.submenu.map((subItem, idx) => (
+                      <Link
+                        key={idx}
+                        to={subItem.path}
+                        onClick={() => setMobileOpen(false)}
+                        className="hover:text-blue-600"
+                      >
+                        {subItem.label}
+                      </Link>
+                    ))}
+                  </div>
+                </details>
+              );
+            })}
 
-            <details className="group">
-              <summary className="flex items-center justify-between py-4 cursor-pointer list-none font-medium text-slate-700">
-                Digital Marketing
-                <ChevronDown
-                  size={18}
-                  className="transition-transform group-open:rotate-180"
-                />
-              </summary>
-
-              <div className="pl-4 pb-3 flex flex-col gap-3 text-sm text-slate-600">
-                <button className="text-left">SEO Services</button>
-                <button className="text-left">
-                  Social Media Marketing
-                </button>
-                <button className="text-left">
-                  Google Ads Management
-                </button>
-              </div>
-            </details>
-
-            <MobileItem title="Contact" />
-
-            <button className="mt-4 w-full py-3 rounded-full text-white font-semibold bg-gradient-to-r from-[#0066FF] to-[#FF7A00]">
+            <Link
+              to="/getstarted"
+              onClick={() => setMobileOpen(false)}
+              className="
+              mt-4
+              w-full
+              py-3
+              rounded-full
+              text-white
+              font-semibold
+              bg-gradient-to-r
+              from-[#0066FF]
+              to-[#FF7A00]
+            "
+            >
               Get Started
-            </button>
+            </Link>
           </div>
         </div>
       )}
@@ -163,9 +247,10 @@ export default function Navbar() {
   );
 }
 
-function NavItem({ title }) {
+function NavItem({ title, path }) {
   return (
-    <button
+    <Link
+      to={path}
       className="
         relative
         text-[15px]
@@ -187,14 +272,16 @@ function NavItem({ title }) {
       "
     >
       {title}
-    </button>
+    </Link>
   );
 }
 
-function DropdownItem({ text }) {
+function DropdownItem({ text, path }) {
   return (
-    <button
+    <Link
+      to={path}
       className="
+        block
         w-full
         px-5
         py-4
@@ -211,14 +298,26 @@ function DropdownItem({ text }) {
       "
     >
       {text}
-    </button>
+    </Link>
   );
 }
 
-function MobileItem({ title }) {
+function MobileItem({ title, path, closeMenu }) {
   return (
-    <button className="py-4 text-left font-medium text-slate-700 border-b border-slate-100">
+    <Link
+      to={path}
+      onClick={closeMenu}
+      className="
+        py-4
+        text-left
+        font-medium
+        text-slate-700
+        border-b
+        border-slate-100
+        block
+      "
+    >
       {title}
-    </button>
+    </Link>
   );
 }
