@@ -66,6 +66,7 @@ function App() {
         <Route path ='/social-media-marketing' element = {<SocialMedia/>}/>
         <Route path ='/google-ads-management' element ={<Ads/>}/>
         <Route path='/getstarted' element={<ErrorBoundary><Getstarted/></ErrorBoundary>} />
+        <Route path='/getstarted/' element={<ErrorBoundary><Getstarted/></ErrorBoundary>} />
       </Routes>
       <Footer />
     </>

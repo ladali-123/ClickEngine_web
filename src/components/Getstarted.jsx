@@ -18,22 +18,7 @@ const Getstarted = () => {
         <span className="bg-yellow-300 text-black font-bold px-4 py-2 rounded-lg shadow">GETSTARTED PAGE RENDERED</span>
       </div>
 
-      {/* Navbar with Get Started button (local copy for the page header area) */}
-      <nav className="max-w-7xl mx-auto px-6 lg:px-12 py-5 flex justify-between items-center border-b border-gray-100">
-        <div className="text-2xl font-bold text-slate-900">
-          Market<span className="text-blue-600">Pro</span>
-        </div>
-        <div className="flex gap-6 items-center">
-          <a href="#" className="text-gray-600 hover:text-blue-600 transition">Services</a>
-          <a href="#" className="text-gray-600 hover:text-blue-600 transition">About</a>
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg font-semibold transition shadow-sm"
-          >
-            Get Started
-          </button>
-        </div>
-      </nav>
+      {/* Page header removed — use global Navbar's Get Started CTA to open the form */}
 
       {/* Rest of your landing page content here */}
       <main className="max-w-6xl mx-auto p-8">
